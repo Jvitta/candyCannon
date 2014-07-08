@@ -139,12 +139,10 @@ static BOOL isCannon;
     
 }
 -(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
+    float r = 100;
+    CGPoint touchedLocation=[touch locationInNode:_slingshot];
     for(CCNode *band in _bands){
-        float r = 100;
-        //get angle from slingshot center to touched location
-        CGPoint touchedLocation=[touch locationInNode:_slingshot];
-        
-        float disToTouchPoint = ccpDistance(touchedLocation,band.position);
+        float disToTouchPoint = ccpDistance(touchedLocation,_slingshot.anchorPoint);
         
         float radians = ccpToAngle(ccpSub(band.position, touchedLocation));
         float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
