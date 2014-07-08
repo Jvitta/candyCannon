@@ -146,23 +146,18 @@ static BOOL isCannon;
         
         float disToTouchPoint = ccpDistance(touchedLocation,band.position);
         
-        CGPoint angle = ccpSub(band.position, touchedLocation);
-        CGFloat angleRadians = ccpToAngle(angle);
-        //rotate
-        float angleDegrees = CC_RADIANS_TO_DEGREES(angleRadians);
-        cannonAngle = -1 * angleDegrees;
-        band.rotation = cannonAngle;
+        float radians = ccpToAngle(ccpSub(band.position, touchedLocation));
+        float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
+        band.rotation = degrees;
         
         if(disToTouchPoint >= r){
-            float y = sin(angleRadians) * r;
-            float x = cos(angleRadians) * r;
-            float dist = ccpDistance(band.position, ccp(x,y));//powf(pow(band.position.x - x, 2) + pow(band.position.y - y,2), 0.5);
-            //CCLOG(@"dist:%f",dist);
-            //CCLOG(@"scaled_dist:%f",dist/r);
+            float y = sin(radians) * r;
+            float x = cos(radians) * r;
+            float dist = ccpDistance(band.position, ccp(x,y));
             band.scaleX = dist/r;
         }
         else{
-            float dist = ccpDistance(touchedLocation,band.position);//powf(pow(band.position.x - touchedLocation.x,2) + pow(band.position.y - touchedLocation.y,2),0.5);
+            float dist = ccpDistance(touchedLocation,band.position);
             band.scaleX = dist/r;
             
         }
