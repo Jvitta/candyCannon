@@ -144,7 +144,7 @@ static BOOL isCannon;
         //get angle from slingshot center to touched location
         CGPoint touchedLocation=[touch locationInNode:_slingshot];
         
-        float disToTouchPoint = powf(pow(touchedLocation.x - band.position.x, 2) + pow(touchedLocation.y - band.position.y, 2),0.5);
+        float disToTouchPoint = ccpDistance(touchedLocation,band.position);
         
         CGPoint angle = ccpSub(band.position, touchedLocation);
         CGFloat angleRadians = ccpToAngle(angle);
@@ -156,13 +156,13 @@ static BOOL isCannon;
         if(disToTouchPoint >= r){
             float y = sin(angleRadians) * r;
             float x = cos(angleRadians) * r;
-            float dist = powf(pow(band.position.x - x, 2) + pow(band.position.y - y,2), 0.5);
+            float dist = ccpDistance(band.position, ccp(x,y));//powf(pow(band.position.x - x, 2) + pow(band.position.y - y,2), 0.5);
             //CCLOG(@"dist:%f",dist);
             //CCLOG(@"scaled_dist:%f",dist/r);
             band.scaleX = dist/r;
         }
         else{
-            float dist = powf(pow(band.position.x - touchedLocation.x,2) + pow(band.position.y - touchedLocation.y,2),0.5);
+            float dist = ccpDistance(touchedLocation,band.position);//powf(pow(band.position.x - touchedLocation.x,2) + pow(band.position.y - touchedLocation.y,2),0.5);
             band.scaleX = dist/r;
             
         }
