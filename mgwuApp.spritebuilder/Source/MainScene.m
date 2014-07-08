@@ -147,16 +147,18 @@ static BOOL isCannon;
         float radians = ccpToAngle(ccpSub(band.position, touchedLocation));
         float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
         
+        float cenToTouchRadians = ccpToAngle(ccpSub(touchedLocation, _slingshot.anchorPoint));
+        
         if(disToTouchPoint >= r){
-            float y = sin(radians) * r;
-            float x = cos(radians) * r;
+            float y = sin(cenToTouchRadians) * r;
+            float x = cos(cenToTouchRadians) * r;
             
             float radians = ccpToAngle(ccpSub(band.position, ccp(x,y)));
-            float degrees = -1 * CC_RADIANS_TO_DEGREES(radians) - 180;
+            float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
             band.rotation = degrees;
             
             float dist = ccpDistance(band.position, ccp(x,y));
-            band.scaleX = r/dist;
+            band.scaleX = dist/r;
         }
         else{
             float dist = ccpDistance(touchedLocation,band.position);
