@@ -152,11 +152,11 @@ static BOOL isCannon;
             float x = cos(radians) * r;
             
             float radians = ccpToAngle(ccpSub(band.position, ccp(x,y)));
-            float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
+            float degrees = -1 * CC_RADIANS_TO_DEGREES(radians) - 180;
             band.rotation = degrees;
             
             float dist = ccpDistance(band.position, ccp(x,y));
-            band.scaleX = dist/r;
+            band.scaleX = r/dist;
         }
         else{
             float dist = ccpDistance(touchedLocation,band.position);
