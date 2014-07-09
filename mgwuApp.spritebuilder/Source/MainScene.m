@@ -50,6 +50,7 @@ static BOOL isCannon;
     CCNode *_background2;
     CCNode *_midGround1;
     CCNode *_midGround2;
+    CCNode *_mousePosition;
     
     Slingshot *_slingshot;
     NSArray *_bands;
@@ -59,6 +60,8 @@ static BOOL isCannon;
     self = [super init];
     if (self) {
         isCannon = false;
+        _mousePosition = [CCNode node];
+        [self addChild:_mousePosition];
     }
     return self;
 }
@@ -94,7 +97,38 @@ static BOOL isCannon;
 }
 
 -(void)update:(CCTime)delta {
+    //this is slingshot stuff
+    float r = 100;
+    CGPoint touchedLocation=_mousePosition.position;
+    CCLOG(@"%f",_mousePosition.position.x);
+    for(CCNode *band in _bands){
+        float disToTouchPoint = ccpDistance(touchedLocation,_slingshot.anchorPoint);
+        
+        float radians = ccpToAngle(ccpSub(band.position, touchedLocation));
+        float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
+        
+        float cenToTouchRadians = ccpToAngle(ccpSub(touchedLocation, _slingshot.anchorPoint));
+        
+        if(disToTouchPoint >= r){
+            float y = sin(cenToTouchRadians) * r;
+            float x = cos(cenToTouchRadians) * r;
+            
+            float radians = ccpToAngle(ccpSub(band.position, ccp(x,y)));
+            float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
+            band.rotation = degrees;
+            
+            float dist = ccpDistance(band.position, ccp(x,y));
+            band.scaleX = dist/r;
+        }
+        else{
+            float dist = ccpDistance(touchedLocation,band.position);
+            band.scaleX = dist/r;
+            band.rotation = degrees;
+        }
+    }
 
+    
+    
     for (CCNode *ground in _grounds) {
         // get the world position of the ground
         CGPoint groundWorldPosition = [_physicsNode convertToWorldSpace:ground.position];
@@ -138,36 +172,16 @@ static BOOL isCannon;
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
     
 }
--(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
-    float r = 100;
-    CGPoint touchedLocation=[touch locationInNode:_slingshot];
-    for(CCNode *band in _bands){
-        float disToTouchPoint = ccpDistance(touchedLocation,_slingshot.anchorPoint);
-        
-        float radians = ccpToAngle(ccpSub(band.position, touchedLocation));
-        float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
-        
-        float cenToTouchRadians = ccpToAngle(ccpSub(touchedLocation, _slingshot.anchorPoint));
-        
-        if(disToTouchPoint >= r){
-            float y = sin(cenToTouchRadians) * r;
-            float x = cos(cenToTouchRadians) * r;
-            
-            float radians = ccpToAngle(ccpSub(band.position, ccp(x,y)));
-            float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
-            band.rotation = degrees;
-            
-            float dist = ccpDistance(band.position, ccp(x,y));
-            band.scaleX = dist/r;
-        }
-        else{
-            float dist = ccpDistance(touchedLocation,band.position);
-            band.scaleX = dist/r;
-            band.rotation = degrees;
-            
-        }
-    }
+
+-(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    CCAction *_slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
+    [_mousePosition runAction:_slingShotBounce];
 }
+-(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
+    CGPoint touchedLocation=[touch locationInNode:_slingshot];
+    _mousePosition.position = touchedLocation;
+    CCLOG(@"%f",_mousePosition.position.x);
+    }
 
 -(void)fire {
     if(isCannon){
