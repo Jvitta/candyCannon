@@ -35,6 +35,8 @@ static BOOL isCannon;
     
     Cannon *_cannon;
     float cannonAngle;
+    BOOL _hasLaunched;
+    BOOL launched;
     
     CCPhysicsNode *_physicsNode;
     Bear *_bear;
@@ -59,6 +61,8 @@ static BOOL isCannon;
 -(id)init{
     self = [super init];
     if (self) {
+        _slingshot.band1.zOrder = 10;
+        _slingshot.band2.zOrder = -10;
         isCannon = false;
         _mousePosition = [CCNode node];
         [self addChild:_mousePosition];
@@ -66,19 +70,26 @@ static BOOL isCannon;
     return self;
 }
 -(void)didLoadFromCCB{
-    _bands = @[_slingshot.band1,_slingshot.band2];
+    _bear = (Bear *)[CCBReader load:@"Bear"];
+    [_physicsNode addChild:_bear];
+    _bear.position = _slingshot.position;
+    _bear.zOrder = 0;
+    
     self.userInteractionEnabled = true;
+    
+    _bands = @[_slingshot.band1,_slingshot.band2];
     _grounds = @[_ground1,_ground2];
     _midGrounds = @[_midGround1,_midGround2];
     _backgrounds = @[_background1,_background2];
+    
     _parallaxBackground = [CCParallaxNode node];
     [_parallaxContainer addChild:_parallaxBackground];
     _parallaxContainer.zOrder = -10;
-    _contentNode.zOrder = 10;
-    
     _midGroundParallaxRatio = ccp(0.9, 1);
     _backgroundParallaxRatio = ccp(0.7, 1);
 
+    _contentNode.zOrder = 10;
+    
     for (CCNode *midGround in _midGrounds) {
         CGPoint offset = midGround.position;
         [_contentNode removeChild:midGround];
@@ -98,9 +109,9 @@ static BOOL isCannon;
 
 -(void)update:(CCTime)delta {
     //this is slingshot stuff
+    //if(!launched){
     float r = 100;
     CGPoint touchedLocation=_mousePosition.position;
-    CCLOG(@"%f",_mousePosition.position.x);
     for(CCNode *band in _bands){
         float disToTouchPoint = ccpDistance(touchedLocation,_slingshot.anchorPoint);
         
@@ -116,17 +127,25 @@ static BOOL isCannon;
             float radians = ccpToAngle(ccpSub(band.position, ccp(x,y)));
             float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
             band.rotation = degrees;
-            
+
             float dist = ccpDistance(band.position, ccp(x,y));
             band.scaleX = dist/r;
+            //place bear at end of slingshot if it hasnt launched
+            if(_hasLaunched == false){
+            _bear.position = ccpAdd(ccp(x,y),_slingshot.position);
+            }
         }
         else{
             float dist = ccpDistance(touchedLocation,band.position);
             band.scaleX = dist/r;
             band.rotation = degrees;
+            //place bear at end of slingshot if it hasnt launched
+            if(_hasLaunched == false){
+            _bear.position = ccpAdd(touchedLocation,_slingshot.position);
+            }
         }
-    }
-
+    //}
+ }
     
     
     for (CCNode *ground in _grounds) {
@@ -170,17 +189,27 @@ static BOOL isCannon;
 }
 
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    
 }
 
 -(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    _hasLaunched = true;
+
     CCAction *_slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
     [_mousePosition runAction:_slingShotBounce];
+    
+    launched = true;
+    CGPoint touchedLocation=[touch locationInNode:_slingshot];
+    CGPoint forceDirection = ccpSub(_slingshot.anchorPoint,touchedLocation);
+    CGPoint normalizedForce = ccpNormalize(forceDirection);
+    CGPoint finalForce = ccpMult(normalizedForce,100);
+    [_bear.physicsBody applyImpulse:finalForce];
+    CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,1000.0f)];
+    [_contentNode runAction:follow];
 }
+
 -(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
     CGPoint touchedLocation=[touch locationInNode:_slingshot];
     _mousePosition.position = touchedLocation;
-    CCLOG(@"%f",_mousePosition.position.x);
     }
 
 -(void)fire {

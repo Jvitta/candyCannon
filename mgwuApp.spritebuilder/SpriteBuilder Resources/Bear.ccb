@@ -71,8 +71,8 @@
 						<string>Position</string>
 						<key>value</key>
 						<array>
-							<real>14</real>
-							<real>-11</real>
+							<real>0.0</real>
+							<real>0.0</real>
 							<integer>0</integer>
 							<integer>0</integer>
 							<integer>0</integer>
@@ -110,7 +110,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>free-vector-sausage-clip-art_112667_Sausage_clip_art_hight.png</string>
+							<string>Candy Cannon Assets/Flap-1-0.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -144,7 +144,7 @@
 			<key>allowsRotation</key>
 			<true/>
 			<key>bodyShape</key>
-			<integer>0</integer>
+			<integer>1</integer>
 			<key>collisionCategories</key>
 			<array/>
 			<key>collisionMask</key>
@@ -152,129 +152,24 @@
 			<key>collisionType</key>
 			<string></string>
 			<key>cornerRadius</key>
-			<real>0.0</real>
+			<real>16</real>
 			<key>density</key>
-			<real>1</real>
+			<real>0.20000000298023224</real>
 			<key>dynamic</key>
 			<true/>
 			<key>elasticity</key>
 			<real>0.30000001192092896</real>
 			<key>friction</key>
-			<real>1</real>
+			<real>0.30000001192092896</real>
 			<key>points</key>
 			<array>
 				<array>
-					<real>-61.78515625</real>
-					<real>29.1640625</real>
-				</array>
-				<array>
-					<real>-51.04296875</real>
-					<real>54.203125</real>
-				</array>
-				<array>
-					<real>-27.4375</real>
-					<real>46.25</real>
-				</array>
-				<array>
-					<real>16.51171875</real>
-					<real>-6.875</real>
-				</array>
-				<array>
-					<real>63.37890625</real>
-					<real>-34.7421875</real>
-				</array>
-				<array>
-					<real>80.33203125</real>
-					<real>-44.875</real>
-				</array>
-				<array>
-					<real>85.94140625</real>
-					<real>-68.4375</real>
-				</array>
-				<array>
-					<real>68.55078125</real>
-					<real>-76.5234375</real>
-				</array>
-				<array>
-					<real>46.859375</real>
-					<real>-78.95703125</real>
-				</array>
-				<array>
-					<real>7.90625</real>
-					<real>-55.48046875</real>
-				</array>
-				<array>
-					<real>-31.65625</real>
-					<real>-16.52734375</real>
-				</array>
-				<array>
-					<real>-52.39453125</real>
-					<real>4.2109375</real>
+					<real>0.0</real>
+					<real>0.0</real>
 				</array>
 			</array>
 			<key>polygons</key>
-			<array>
-				<array>
-					<array>
-						<real>16.51171875</real>
-						<real>-6.875</real>
-					</array>
-					<array>
-						<real>-27.4375</real>
-						<real>46.25</real>
-					</array>
-					<array>
-						<real>-51.04296875</real>
-						<real>54.203125</real>
-					</array>
-					<array>
-						<real>-61.78515625</real>
-						<real>29.1640625</real>
-					</array>
-					<array>
-						<real>-52.39453125</real>
-						<real>4.2109375</real>
-					</array>
-					<array>
-						<real>-31.65625</real>
-						<real>-16.52734375</real>
-					</array>
-				</array>
-				<array>
-					<array>
-						<real>-31.65625</real>
-						<real>-16.52734375</real>
-					</array>
-					<array>
-						<real>7.90625</real>
-						<real>-55.48046875</real>
-					</array>
-					<array>
-						<real>46.859375</real>
-						<real>-78.95703125</real>
-					</array>
-					<array>
-						<real>68.55078125</real>
-						<real>-76.5234375</real>
-					</array>
-					<array>
-						<real>85.94140625</real>
-						<real>-68.4375</real>
-					</array>
-					<array>
-						<real>80.33203125</real>
-						<real>-44.875</real>
-					</array>
-					<array>
-						<real>63.37890625</real>
-						<real>-34.7421875</real>
-					</array>
-					<array>
-						<real>16.51171875</real>
-						<real>-6.875</real>
-					</array>
-				</array>
-			</array>
+			<array/>
 		</dict>
 		<key>properties</key>
 		<array>
