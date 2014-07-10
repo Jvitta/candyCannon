@@ -85,7 +85,7 @@
 						<string>ScaleLock</string>
 						<key>value</key>
 						<array>
-							<real>1</real>
+							<real>0.20000000298023224</real>
 							<real>1</real>
 							<false/>
 							<integer>0</integer>
@@ -97,7 +97,7 @@
 						<key>type</key>
 						<string>Degrees</string>
 						<key>value</key>
-						<real>-35</real>
+						<real>-20</real>
 					</dict>
 					<dict>
 						<key>name</key>
@@ -157,7 +157,7 @@
 						<string>ScaleLock</string>
 						<key>value</key>
 						<array>
-							<real>1</real>
+							<real>0.20000000298023224</real>
 							<real>1</real>
 							<false/>
 							<integer>0</integer>
@@ -169,7 +169,7 @@
 						<key>type</key>
 						<string>Degrees</string>
 						<key>value</key>
-						<real>-40</real>
+						<real>160</real>
 					</dict>
 					<dict>
 						<key>name</key>

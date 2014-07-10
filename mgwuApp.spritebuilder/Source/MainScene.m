@@ -74,6 +74,9 @@ static BOOL isCannon;
     [_physicsNode addChild:_bear];
     _bear.position = _slingshot.position;
     _bear.zOrder = 0;
+    _bear.physicsBody.collisionType = @"bear";
+    _ground1.physicsBody.collisionType = @"ground";
+    _ground2.physicsBody.collisionType = @"ground";
     
     self.userInteractionEnabled = true;
     
@@ -119,7 +122,7 @@ static BOOL isCannon;
         float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
         
         float cenToTouchRadians = ccpToAngle(ccpSub(touchedLocation, _slingshot.anchorPoint));
-        
+        CCLOG(@"%f",cenToTouchRadians);
         if(disToTouchPoint >= r){
             float y = sin(cenToTouchRadians) * r;
             float x = cos(cenToTouchRadians) * r;
@@ -197,20 +200,28 @@ static BOOL isCannon;
     CCAction *_slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
     [_mousePosition runAction:_slingShotBounce];
     
-    launched = true;
+    if(!launched){
     CGPoint touchedLocation=[touch locationInNode:_slingshot];
     CGPoint forceDirection = ccpSub(_slingshot.anchorPoint,touchedLocation);
     CGPoint normalizedForce = ccpNormalize(forceDirection);
-    CGPoint finalForce = ccpMult(normalizedForce,100);
+    CGPoint finalForce = ccpMult(normalizedForce,130);
     [_bear.physicsBody applyImpulse:finalForce];
     CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,1000.0f)];
     [_contentNode runAction:follow];
+    }
+    launched = true;
 }
 
 -(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
     CGPoint touchedLocation=[touch locationInNode:_slingshot];
     _mousePosition.position = touchedLocation;
     }
+
+-(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair bear:(CCNode *)nodeA ground:(CCNode *)nodeB{
+    CCLOG(@"collided");
+    //_bear.physicsBody.velocity = ccpSub(_bear.physicsBody.velocity,ccp(,0));
+}
+
 
 -(void)fire {
     if(isCannon){
@@ -230,4 +241,7 @@ static BOOL isCannon;
     }
 }
 
+-(void)retry{
+    [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
+}
 @end
