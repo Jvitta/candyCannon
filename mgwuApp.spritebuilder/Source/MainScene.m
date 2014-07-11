@@ -11,6 +11,7 @@
 #import "Bear.h"
 #import "Slingshot.h"
 #import "GameOver.h"
+#import "Candy.h"
 
 @interface CGPointObject : NSObject
 {
@@ -47,6 +48,7 @@ static BOOL isCannon;
     NSArray *_grounds;
     NSArray *_midGrounds;
     NSArray *_backgrounds;
+    NSMutableArray *_candies;
     CCNode *_ground1;
     CCNode *_ground2;
     CCNode *_background1;
@@ -70,8 +72,8 @@ static BOOL isCannon;
         isCannon = false;
         _mousePosition = [CCNode node];
         [self addChild:_mousePosition];
-        screenSize = [[CCDirector sharedDirector] viewSize];
         _gameOver = (GameOver *)[CCBReader load:@"GameOver"];
+        _candies = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -113,6 +115,7 @@ static BOOL isCannon;
 }
 
 -(void)update:(CCTime)delta {
+    screenSize = [[CCDirector sharedDirector] viewSize];
     //this is slingshot stuff
     if(!finLaunching){
     float r = 100;
@@ -151,7 +154,7 @@ static BOOL isCannon;
     }
  }
     //if character has stopped moving
-    if(!gameOver && finLaunching && _bear.physicsBody.velocity.x <= 1){
+    if(!gameOver && finLaunching && _bear.physicsBody.velocity.x <= 1 && _bear.physicsBody.velocity.y <= 1 && _bear.position.y){
         [self gameOverSequence];
         gameOver = true;
     }
@@ -195,6 +198,17 @@ static BOOL isCannon;
             }
         }
     }
+    NSMutableArray *removeCandy = [NSMutableArray array];
+    for(Candy *candy in _candies){
+        CGPoint candyPhysPos = [self convertToNodeSpace:_contentNode.position];
+        if (candy.position.x <= -candyPhysPos.x){
+            [candy removeFromParent];
+            [removeCandy addObject:candy];
+        }
+    }
+    for(Candy *candy in removeCandy){
+        [_candies removeObject:candy];
+    }
 }
 
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
@@ -207,7 +221,6 @@ static BOOL isCannon;
     
     CCActionEaseElasticOut *slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
     CCActionCallBlock *launched = [CCActionCallBlock actionWithBlock:^{
-        finLaunching = true;
     }];
     CCAction *actionSequence = [CCActionSequence actions:slingShotBounce,launched, nil];
     
@@ -218,11 +231,12 @@ static BOOL isCannon;
     CGPoint bandPosition = [_slingshot.band1 convertToWorldSpace:ccp(-100, 0)];
     CGPoint newPos = [self convertToNodeSpace:bandPosition];
     CGPoint forceDirection = ccpSub(_slingshot.positionInPoints, newPos);
-    CGPoint finalForce = ccpMult(forceDirection,2);
+    CGPoint finalForce = ccpMult(forceDirection,3);
     [_bear.physicsBody applyImpulse:finalForce];
     CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,_gradNode.contentSize.height)];
     [_contentNode runAction:follow];
     }
+            finLaunching = true;
 }
 
 -(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -231,7 +245,7 @@ static BOOL isCannon;
 }
 
 -(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair bear:(CCNode *)nodeA ground:(CCNode *)nodeB{
-    //_bear.physicsBody.velocity = ccpSub(_bear.physicsBody.velocity,ccp(,0));
+    
 }
 
 -(void)createCandyWithPosition:(CGPoint) Position{
@@ -243,12 +257,12 @@ static BOOL isCannon;
     for(int i = 0; i < candyNum;i++){
         //create candy off the right of the screen w/ random position
         candyPosition = ccp(Position.x + 2 * screenSize.width + arc4random()% (int)screenSize.width + 100,Position.y + 100 + arc4random()% (int) _gradNode.contentSize.height);
-        CCNode *_candy = [CCBReader load:@"Candy"];
+        Candy *_candy = (Candy *) [CCBReader load:@"Candy"];
         _candy.position = candyPosition;
         _candy.zOrder = 100;
         [_contentNode addChild:_candy];
+        [_candies addObject:_candy];
     }
-
 }
 
 -(void)gameOverSequence{
@@ -256,24 +270,4 @@ static BOOL isCannon;
     _gameOver.position = ccp(25,30);
     _gameOver.zOrder = 100;
 }
-/*-(void)fire {
-    if(isCannon){
-    _bear = (Bear *)[CCBReader load:@"Bear"];
-    CGPoint bearPosition = [_cannon convertToWorldSpace:ccp(150, 50)];
-    // transform the world position to the node space to which the bear will be added (_physicsNode)
-    _bear.position = [_physicsNode convertToNodeSpace:bearPosition];
-    float Ypower = -cannonAngle/90 * cannonPower;
-    [_physicsNode addChild:_bear];
-    CGPoint launchDirection = ccp(cannonPower - Ypower,Ypower);
-    CGPoint force = ccpMult(launchDirection, 50000);
-    [_bear.physicsBody applyForce:force];
-    CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:_contentNode.boundingBox];
-    [_contentNode runAction:follow];
-    CCActionFollow *followGrad = [CCActionFollow actionWithTarget:_bear worldBoundary:_gradNode.boundingBox];
-    [_gradNode runAction:followGrad];
-    }
-}*/
-
-
-
 @end
