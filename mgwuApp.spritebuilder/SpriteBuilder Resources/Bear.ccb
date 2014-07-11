@@ -110,7 +110,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>Candy Cannon Assets/Flap-1-0.png</string>
+							<string>CandyCannonAssets/Flap-1-0.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -154,13 +154,13 @@
 			<key>cornerRadius</key>
 			<real>16</real>
 			<key>density</key>
-			<real>0.25</real>
+			<real>0.15000000596046448</real>
 			<key>dynamic</key>
 			<true/>
 			<key>elasticity</key>
 			<real>1</real>
 			<key>friction</key>
-			<real>1</real>
+			<real>0.89999997615814209</real>
 			<key>points</key>
 			<array>
 				<array>

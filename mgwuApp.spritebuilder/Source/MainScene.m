@@ -10,6 +10,7 @@
 #import "Cannon.h"
 #import "Bear.h"
 #import "Slingshot.h"
+#import "GameOver.h"
 
 @interface CGPointObject : NSObject
 {
@@ -24,7 +25,6 @@
 -(id) initWithCGPoint:(CGPoint)point offset:(CGPoint)offset;
 @end
 
-static NSInteger cannonPower = 5;
 static BOOL isCannon;
 @implementation MainScene{
     
@@ -36,7 +36,8 @@ static BOOL isCannon;
     Cannon *_cannon;
     float cannonAngle;
     BOOL _hasLaunched;
-    BOOL launched;
+    BOOL finLaunching;
+    BOOL gameOver;
     
     CCPhysicsNode *_physicsNode;
     Bear *_bear;
@@ -53,9 +54,12 @@ static BOOL isCannon;
     CCNode *_midGround1;
     CCNode *_midGround2;
     CCNode *_mousePosition;
+    CGSize screenSize;
     
     Slingshot *_slingshot;
     NSArray *_bands;
+    
+    GameOver *_gameOver;
 }
 
 -(id)init{
@@ -66,6 +70,8 @@ static BOOL isCannon;
         isCannon = false;
         _mousePosition = [CCNode node];
         [self addChild:_mousePosition];
+        screenSize = [[CCDirector sharedDirector] viewSize];
+        _gameOver = (GameOver *)[CCBReader load:@"GameOver"];
     }
     return self;
 }
@@ -104,15 +110,11 @@ static BOOL isCannon;
         [_contentNode removeChild:background];
         [_parallaxBackground addChild:background z:-10 parallaxRatio:_backgroundParallaxRatio positionOffset:offset];
     }
-    
-    /*_cannon = (Cannon *) [CCBReader load:@"Cannon"];
-    _cannon.position = ccp(74,80);
-    [_contentNode addChild:_cannon];*/
 }
 
 -(void)update:(CCTime)delta {
     //this is slingshot stuff
-    //if(!launched){
+    if(!finLaunching){
     float r = 100;
     CGPoint touchedLocation=_mousePosition.position;
     for(CCNode *band in _bands){
@@ -122,7 +124,6 @@ static BOOL isCannon;
         float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
         
         float cenToTouchRadians = ccpToAngle(ccpSub(touchedLocation, _slingshot.anchorPoint));
-        CCLOG(@"%f",cenToTouchRadians);
         if(disToTouchPoint >= r){
             float y = sin(cenToTouchRadians) * r;
             float x = cos(cenToTouchRadians) * r;
@@ -147,10 +148,13 @@ static BOOL isCannon;
             _bear.position = ccpAdd(touchedLocation,_slingshot.position);
             }
         }
-    //}
+    }
  }
-    
-    
+    //if character has stopped moving
+    if(!gameOver && finLaunching && _bear.physicsBody.velocity.x <= 1){
+        [self gameOverSequence];
+        gameOver = true;
+    }
     for (CCNode *ground in _grounds) {
         // get the world position of the ground
         CGPoint groundWorldPosition = [_physicsNode convertToWorldSpace:ground.position];
@@ -158,6 +162,8 @@ static BOOL isCannon;
         CGPoint groundScreenPosition = [self convertToNodeSpace:groundWorldPosition];
         // if the left corner is one complete width off the screen, move it to the right
         if (groundScreenPosition.x <= (-1 * ground.contentSize.width)) {
+            //create candy on screen every time ground moves off screen
+            [self createCandyWithPosition:ground.position];
             ground.position = ccp(ground.position.x + 2 * ground.contentSize.width -1, ground.position.y);
         }
     }
@@ -194,36 +200,63 @@ static BOOL isCannon;
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
 }
 
+
 -(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
     _hasLaunched = true;
 
-    CCAction *_slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
-    [_mousePosition runAction:_slingShotBounce];
     
-    if(!launched){
-    CGPoint touchedLocation=[touch locationInNode:_slingshot];
-    CGPoint forceDirection = ccpSub(_slingshot.anchorPoint,touchedLocation);
-    CGPoint normalizedForce = ccpNormalize(forceDirection);
-    CGPoint finalForce = ccpMult(normalizedForce,130);
+    CCActionEaseElasticOut *slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
+    CCActionCallBlock *launched = [CCActionCallBlock actionWithBlock:^{
+        finLaunching = true;
+    }];
+    CCAction *actionSequence = [CCActionSequence actions:slingShotBounce,launched, nil];
+    
+    [_mousePosition runAction:actionSequence];
+    
+    
+    if(!finLaunching){
+    CGPoint bandPosition = [_slingshot.band1 convertToWorldSpace:ccp(-100, 0)];
+    CGPoint newPos = [self convertToNodeSpace:bandPosition];
+    CGPoint forceDirection = ccpSub(_slingshot.positionInPoints, newPos);
+    CGPoint finalForce = ccpMult(forceDirection,2);
     [_bear.physicsBody applyImpulse:finalForce];
-    CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,1000.0f)];
+    CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,_gradNode.contentSize.height)];
     [_contentNode runAction:follow];
     }
-    launched = true;
 }
 
 -(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
     CGPoint touchedLocation=[touch locationInNode:_slingshot];
     _mousePosition.position = touchedLocation;
-    }
+}
 
 -(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair bear:(CCNode *)nodeA ground:(CCNode *)nodeB{
-    CCLOG(@"collided");
     //_bear.physicsBody.velocity = ccpSub(_bear.physicsBody.velocity,ccp(,0));
 }
 
+-(void)createCandyWithPosition:(CGPoint) Position{
+    int candyNum;
+    int flockNum;
+    candyNum = arc4random()%5 + 5;
+    flockNum = arc4random()%3;
+    CGPoint candyPosition;
+    for(int i = 0; i < candyNum;i++){
+        //create candy off the right of the screen w/ random position
+        candyPosition = ccp(Position.x + 2 * screenSize.width + arc4random()% (int)screenSize.width + 100,Position.y + 100 + arc4random()% (int) _gradNode.contentSize.height);
+        CCNode *_candy = [CCBReader load:@"Candy"];
+        _candy.position = candyPosition;
+        _candy.zOrder = 100;
+        [_contentNode addChild:_candy];
+    }
 
--(void)fire {
+}
+
+-(void)gameOverSequence{
+    [self addChild:_gameOver];
+    _gameOver.position = ccp(25,30);
+    _gameOver.zOrder = 100;
+}
+/*-(void)fire {
     if(isCannon){
     _bear = (Bear *)[CCBReader load:@"Bear"];
     CGPoint bearPosition = [_cannon convertToWorldSpace:ccp(150, 50)];
@@ -239,9 +272,8 @@ static BOOL isCannon;
     CCActionFollow *followGrad = [CCActionFollow actionWithTarget:_bear worldBoundary:_gradNode.boundingBox];
     [_gradNode runAction:followGrad];
     }
-}
+}*/
 
--(void)retry{
-    [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
-}
+
+
 @end

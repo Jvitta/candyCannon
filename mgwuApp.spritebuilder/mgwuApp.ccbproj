@@ -107,6 +107,11 @@
 			<key>scaleFrom</key>
 			<integer>4</integer>
 		</dict>
+		<key>CandyCannonAssets</key>
+		<dict>
+			<key>isDirty</key>
+			<true/>
+		</dict>
 		<key>Sprites</key>
 		<dict/>
 		<key>ccbResources</key>
