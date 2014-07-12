@@ -155,8 +155,6 @@
 						</array>
 					</dict>
 				</array>
-				<key>selected</key>
-				<true/>
 			</dict>
 			<dict>
 				<key>UUID</key>
@@ -644,7 +642,7 @@
 									<key>elasticity</key>
 									<real>0.60000002384185791</real>
 									<key>friction</key>
-									<real>0.34999999403953552</real>
+									<real>0.25</real>
 									<key>points</key>
 									<array>
 										<array>
@@ -798,7 +796,7 @@
 									<key>elasticity</key>
 									<real>0.60000002384185791</real>
 									<key>friction</key>
-									<real>0.34999999403953552</real>
+									<real>0.25</real>
 									<key>points</key>
 									<array>
 										<array>
@@ -992,7 +990,7 @@
 								<key>value</key>
 								<array>
 									<real>0.0</real>
-									<real>-300</real>
+									<real>-600</real>
 								</array>
 							</dict>
 							<dict>
@@ -1004,6 +1002,8 @@
 								<real>0.5</real>
 							</dict>
 						</array>
+						<key>selected</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>UUID</key>

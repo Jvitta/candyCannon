@@ -222,14 +222,10 @@ static BOOL isCannon;
 
 
 -(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    _hasLaunched = true;
-
-    
     CCActionEaseElasticOut *slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
     CCActionCallBlock *launched = [CCActionCallBlock actionWithBlock:^{
-        finLaunching = true;
+    _hasLaunched = true;
     }];
-    
     CCAction *actionSequence = [CCActionSequence actions:slingShotBounce,launched, nil];
     
     [_mousePosition runAction:actionSequence];
@@ -239,11 +235,12 @@ static BOOL isCannon;
     CGPoint bandPosition = [_slingshot.band1 convertToWorldSpace:ccp(-100, 0)];
     CGPoint newPos = [self convertToNodeSpace:bandPosition];
     CGPoint forceDirection = ccpSub(_slingshot.positionInPoints, newPos);
-    CGPoint finalForce = ccpMult(forceDirection,6);
+    CGPoint finalForce = ccpMult(forceDirection,12);
     [_bear.physicsBody applyImpulse:finalForce];
     CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,_gradNode.contentSize.height)];
     [_contentNode runAction:follow];
     }
+    finLaunching = true;
 }
 
 -(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
