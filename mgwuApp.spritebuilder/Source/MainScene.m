@@ -35,6 +35,7 @@ static BOOL isCannon;
     CCParallaxNode *_parallaxBackground;
     
     Cannon *_cannon;
+    int points;
     float cannonAngle;
     BOOL _hasLaunched;
     BOOL finLaunching;
@@ -56,6 +57,7 @@ static BOOL isCannon;
     CCNode *_midGround1;
     CCNode *_midGround2;
     CCNode *_mousePosition;
+    CCLabelTTF *_candyNum;
     CGSize screenSize;
     
     Slingshot *_slingshot;
@@ -67,6 +69,7 @@ static BOOL isCannon;
 -(id)init{
     self = [super init];
     if (self) {
+        points = 0;
         _slingshot.band1.zOrder = 10;
         _slingshot.band2.zOrder = -10;
         isCannon = false;
@@ -202,7 +205,8 @@ static BOOL isCannon;
     NSMutableArray *removeCandy = [NSMutableArray array];
     for(Candy *candy in _candies){
         if(CGRectIntersectsRect(candy.boundingBox, _bear.boundingBox)){
-            CCLOG(@"hit");
+            points++;
+            _candyNum.string = [NSString stringWithFormat:@"%d", points];
             [candy removeFromParent];
             [removeCandy addObject:candy];
         }
