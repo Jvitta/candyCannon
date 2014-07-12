@@ -115,6 +115,7 @@ static BOOL isCannon;
 }
 
 -(void)update:(CCTime)delta {
+
     screenSize = [[CCDirector sharedDirector] viewSize];
     //this is slingshot stuff
     if(!finLaunching){
@@ -200,8 +201,13 @@ static BOOL isCannon;
     }
     NSMutableArray *removeCandy = [NSMutableArray array];
     for(Candy *candy in _candies){
+        if(CGRectIntersectsRect(candy.boundingBox, _bear.boundingBox)){
+            CCLOG(@"hit");
+            [candy removeFromParent];
+            [removeCandy addObject:candy];
+        }
         CGPoint candyPhysPos = [self convertToNodeSpace:_contentNode.position];
-        if (candy.position.x <= -candyPhysPos.x){
+        if (candy.position.x + 25 <= -candyPhysPos.x){
             [candy removeFromParent];
             [removeCandy addObject:candy];
         }
@@ -221,7 +227,9 @@ static BOOL isCannon;
     
     CCActionEaseElasticOut *slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
     CCActionCallBlock *launched = [CCActionCallBlock actionWithBlock:^{
+        finLaunching = true;
     }];
+    
     CCAction *actionSequence = [CCActionSequence actions:slingShotBounce,launched, nil];
     
     [_mousePosition runAction:actionSequence];
@@ -231,12 +239,11 @@ static BOOL isCannon;
     CGPoint bandPosition = [_slingshot.band1 convertToWorldSpace:ccp(-100, 0)];
     CGPoint newPos = [self convertToNodeSpace:bandPosition];
     CGPoint forceDirection = ccpSub(_slingshot.positionInPoints, newPos);
-    CGPoint finalForce = ccpMult(forceDirection,3);
+    CGPoint finalForce = ccpMult(forceDirection,6);
     [_bear.physicsBody applyImpulse:finalForce];
     CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,_gradNode.contentSize.height)];
     [_contentNode runAction:follow];
     }
-            finLaunching = true;
 }
 
 -(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -244,15 +251,12 @@ static BOOL isCannon;
     _mousePosition.position = touchedLocation;
 }
 
--(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair bear:(CCNode *)nodeA ground:(CCNode *)nodeB{
-    
-}
 
 -(void)createCandyWithPosition:(CGPoint) Position{
     int candyNum;
     int flockNum;
     candyNum = arc4random()%5 + 5;
-    flockNum = arc4random()%3;
+    flockNum = arc4random()%4;
     CGPoint candyPosition;
     for(int i = 0; i < candyNum;i++){
         //create candy off the right of the screen w/ random position
@@ -260,7 +264,7 @@ static BOOL isCannon;
         Candy *_candy = (Candy *) [CCBReader load:@"Candy"];
         _candy.position = candyPosition;
         _candy.zOrder = 100;
-        [_contentNode addChild:_candy];
+        [_physicsNode addChild:_candy];
         [_candies addObject:_candy];
     }
 }

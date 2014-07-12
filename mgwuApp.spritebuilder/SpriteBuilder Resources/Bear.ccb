@@ -71,8 +71,8 @@
 						<string>Position</string>
 						<key>value</key>
 						<array>
-							<real>0.0</real>
-							<real>0.0</real>
+							<real>17</real>
+							<real>17</real>
 							<integer>0</integer>
 							<integer>0</integer>
 							<integer>0</integer>
@@ -154,18 +154,18 @@
 			<key>cornerRadius</key>
 			<real>16</real>
 			<key>density</key>
-			<real>0.34999999403953552</real>
+			<real>0.75</real>
 			<key>dynamic</key>
 			<true/>
 			<key>elasticity</key>
-			<real>1</real>
+			<real>0.80000001192092896</real>
 			<key>friction</key>
 			<real>0.89999997615814209</real>
 			<key>points</key>
 			<array>
 				<array>
-					<real>0.0</real>
-					<real>0.0</real>
+					<real>21.367218017578125</real>
+					<real>17.027359008789062</real>
 				</array>
 			</array>
 			<key>polygons</key>
@@ -202,8 +202,8 @@
 				<string>Size</string>
 				<key>value</key>
 				<array>
-					<real>0.0</real>
-					<real>0.0</real>
+					<real>38</real>
+					<real>38</real>
 					<integer>0</integer>
 					<integer>0</integer>
 				</array>
@@ -215,8 +215,8 @@
 				<string>Point</string>
 				<key>value</key>
 				<array>
-					<real>0.0</real>
-					<real>0.0</real>
+					<real>0.5</real>
+					<real>0.5</real>
 				</array>
 			</dict>
 			<dict>
