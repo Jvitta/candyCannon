@@ -108,9 +108,11 @@
 			<integer>4</integer>
 		</dict>
 		<key>CandyCannonAssets</key>
+		<dict/>
+		<key>CandyCannonAssets/gamebar-ipad-2.png</key>
 		<dict>
-			<key>isDirty</key>
-			<true/>
+			<key>scaleFrom</key>
+			<integer>4</integer>
 		</dict>
 		<key>Sprites</key>
 		<dict/>

@@ -10,4 +10,10 @@
 
 @implementation Menu
 
+-(void)play{
+    CCScene *gameplayScene = [CCBReader loadAsScene:@"MainScene"];
+    [[CCDirector sharedDirector] replaceScene:gameplayScene];
+}
+
+
 @end

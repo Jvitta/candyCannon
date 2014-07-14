@@ -12,6 +12,7 @@
 #import "Slingshot.h"
 #import "GameOver.h"
 #import "Candy.h"
+#import "CCPhysics+ObjectiveChipmunk.h"
 
 @interface CGPointObject : NSObject
 {
@@ -31,25 +32,28 @@ static BOOL isCannon;
     
     CGPoint _midGroundParallaxRatio;
     CGPoint _backgroundParallaxRatio;
+    CGPoint _mountainParallaxRatio;
     CCNode *_parallaxContainer;
     CCParallaxNode *_parallaxBackground;
     
     Cannon *_cannon;
-    int points;
+    float points;
     float cannonAngle;
+    BOOL _canFly;
     BOOL _hasLaunched;
     BOOL finLaunching;
     BOOL gameOver;
     
     CCPhysicsNode *_physicsNode;
     Bear *_bear;
-    CCNode *_contentNode;
-    CCNode *_gradNode;
     
     NSArray *_grounds;
     NSArray *_midGrounds;
     NSArray *_backgrounds;
+    NSArray *_mountains;
     NSMutableArray *_candies;
+    CCNode *_mountain1;
+    CCNode *_mountain2;
     CCNode *_ground1;
     CCNode *_ground2;
     CCNode *_background1;
@@ -57,6 +61,13 @@ static BOOL isCannon;
     CCNode *_midGround1;
     CCNode *_midGround2;
     CCNode *_mousePosition;
+    CCNode *_barNode;
+    CCNode *_contentNode;
+    CCNode *_gradNode;
+    CCNode *_hudNode;
+    CCSprite *_insideBar;
+    
+    CCLabelTTF *_distance;
     CCLabelTTF *_candyNum;
     CGSize screenSize;
     
@@ -81,29 +92,31 @@ static BOOL isCannon;
     return self;
 }
 -(void)didLoadFromCCB{
+    
     _bear = (Bear *)[CCBReader load:@"Bear"];
     [_physicsNode addChild:_bear];
     _bear.position = _slingshot.position;
     _bear.zOrder = 0;
+    _physicsNode.gravity = ccp(0,0);
     _bear.physicsBody.collisionType = @"bear";
     _ground1.physicsBody.collisionType = @"ground";
     _ground2.physicsBody.collisionType = @"ground";
     
     self.userInteractionEnabled = true;
-    
     _bands = @[_slingshot.band1,_slingshot.band2];
     _grounds = @[_ground1,_ground2];
     _midGrounds = @[_midGround1,_midGround2];
     _backgrounds = @[_background1,_background2];
+    _mountains = @[_mountain1,_mountain2];
     
     _parallaxBackground = [CCParallaxNode node];
     [_parallaxContainer addChild:_parallaxBackground];
     _parallaxContainer.zOrder = -10;
-    _midGroundParallaxRatio = ccp(0.9, 1);
-    _backgroundParallaxRatio = ccp(0.7, 1);
-
-    _contentNode.zOrder = 10;
+    _midGroundParallaxRatio = ccp(0.8, 1);
+    _backgroundParallaxRatio = ccp(0.5, 1);
+    _mountainParallaxRatio = ccp(0.3,1);
     
+    _physicsNode.collisionDelegate = self;
     for (CCNode *midGround in _midGrounds) {
         CGPoint offset = midGround.position;
         [_contentNode removeChild:midGround];
@@ -115,10 +128,15 @@ static BOOL isCannon;
         [_contentNode removeChild:background];
         [_parallaxBackground addChild:background z:-10 parallaxRatio:_backgroundParallaxRatio positionOffset:offset];
     }
+    for (CCNode *mountain in _mountains) {
+        CGPoint offset = mountain.position;
+        [_contentNode removeChild:mountain];
+        [_parallaxBackground addChild:mountain z:-15 parallaxRatio:_mountainParallaxRatio positionOffset:offset];
+    }
 }
 
 -(void)update:(CCTime)delta {
-
+    _distance.string = [NSString stringWithFormat:@"%i", (int) _bear.position.x/100 - 1];
     screenSize = [[CCDirector sharedDirector] viewSize];
     //this is slingshot stuff
     if(!finLaunching){
@@ -157,6 +175,16 @@ static BOOL isCannon;
         }
     }
  }
+    if(_canFly && points >= 0){
+        /*[_bear addChild:_jetPack];
+         get the screen position of the ground
+        CGPoint packScreenPosition = [_bear convertToNodeSpace:_jetPack.position];
+
+        _jetPack.position = packScreenPosition;*/
+        _bear.physicsBody.velocity = ccp(_bear.physicsBody.velocity.x + 10,_bear.physicsBody.velocity.y + 30);
+        points -= 0.15;
+        _insideBar.ScaleY = _insideBar.scaleY - 0.045;
+    }
     //if character has stopped moving
     if(!gameOver && finLaunching && _bear.physicsBody.velocity.x <= 1 && _bear.physicsBody.velocity.y <= 1 && _bear.position.y){
         [self gameOverSequence];
@@ -180,7 +208,7 @@ static BOOL isCannon;
         // get the screen position of the ground
         CGPoint groundScreenPosition = [self convertToNodeSpace:groundWorldPosition];
         // if the left corner is one complete width off the screen, move it to the right
-        if (groundScreenPosition.x <= (-1 * midGround.contentSize.width)) {
+        if (groundScreenPosition.x <= (-1 * midGround.contentSize.width) - 30) {
             for (CGPointObject *child in _parallaxBackground.parallaxArray) {
                 if (child.child == midGround) {
                     child.offset = ccp(child.offset.x + 2 * midGround.contentSize.width, child.offset.y);
@@ -194,10 +222,24 @@ static BOOL isCannon;
         // get the screen position of the ground
         CGPoint groundScreenPosition = [self convertToNodeSpace:groundWorldPosition];
         // if the left corner is one complete width off the screen, move it to the right
-        if (groundScreenPosition.x <= (-1 * background.contentSize.width)) {
+        if (groundScreenPosition.x <= (-1 * background.contentSize.width) - 30) {
             for (CGPointObject *child in _parallaxBackground.parallaxArray) {
                 if (child.child == background) {
                     child.offset = ccp(child.offset.x + 2 * background.contentSize.width - 1, child.offset.y);
+                }
+            }
+        }
+    }
+    for (CCNode *mountain in _mountains) {
+        // get the world position of the ground
+        CGPoint groundWorldPosition = [_physicsNode convertToWorldSpace:mountain.position];
+        // get the screen position of the ground
+        CGPoint groundScreenPosition = [self convertToNodeSpace:groundWorldPosition];
+        // if the left corner is one complete width off the screen, move it to the right
+        if (groundScreenPosition.x <= (-1 * mountain.contentSize.width) - 60) {
+            for (CGPointObject *child in _parallaxBackground.parallaxArray) {
+                if (child.child == mountain) {
+                    child.offset = ccp(child.offset.x + 2 * mountain.contentSize.width - 1, child.offset.y);
                 }
             }
         }
@@ -206,7 +248,8 @@ static BOOL isCannon;
     for(Candy *candy in _candies){
         if(CGRectIntersectsRect(candy.boundingBox, _bear.boundingBox)){
             points++;
-            _candyNum.string = [NSString stringWithFormat:@"%d", points];
+            _insideBar.scaleY = _insideBar.scaleY + 0.3;
+            _candyNum.string = [NSString stringWithFormat:@"%i", (int) points];
             [candy removeFromParent];
             [removeCandy addObject:candy];
         }
@@ -222,10 +265,16 @@ static BOOL isCannon;
 }
 
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(finLaunching && points >= 0){
+        _canFly = true;
+    }
 }
 
 
 -(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    _physicsNode.gravity = ccp(0,-500);
+    _canFly = false;
+    
     CCActionEaseElasticOut *slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
     CCActionCallBlock *launched = [CCActionCallBlock actionWithBlock:^{
     _hasLaunched = true;
@@ -239,7 +288,7 @@ static BOOL isCannon;
     CGPoint bandPosition = [_slingshot.band1 convertToWorldSpace:ccp(-100, 0)];
     CGPoint newPos = [self convertToNodeSpace:bandPosition];
     CGPoint forceDirection = ccpSub(_slingshot.positionInPoints, newPos);
-    CGPoint finalForce = ccpMult(forceDirection,12);
+    CGPoint finalForce = ccpMult(forceDirection,10 );
     [_bear.physicsBody applyImpulse:finalForce];
     CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,_gradNode.contentSize.height)];
     [_contentNode runAction:follow];
@@ -251,7 +300,9 @@ static BOOL isCannon;
     CGPoint touchedLocation=[touch locationInNode:_slingshot];
     _mousePosition.position = touchedLocation;
 }
-
+-(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair ground:(CCNode *)nodeA wildcard:(CCNode *)nodeB{
+    _bear.physicsBody.velocity = ccp(_bear.physicsBody.velocity.x * 0.96,_bear.physicsBody.velocity.y);
+}
 
 -(void)createCandyWithPosition:(CGPoint) Position{
     int candyNum;
