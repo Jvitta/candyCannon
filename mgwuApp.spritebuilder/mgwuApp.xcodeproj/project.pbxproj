@@ -10,7 +10,9 @@
 		0483D6F41970572E0064A8FC /* Candy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0483D6F31970572E0064A8FC /* Candy.m */; };
 		0483D6F81970670C0064A8FC /* GameOver.m in Sources */ = {isa = PBXBuildFile; fileRef = 0483D6F71970670C0064A8FC /* GameOver.m */; };
 		0483D6FB197070000064A8FC /* Menu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0483D6FA197070000064A8FC /* Menu.m */; };
-		04A567CE196334BD004F5254 /* Cannon.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A567CD196334BD004F5254 /* Cannon.m */; };
+		04A4D5D31975D7D2007B84B7 /* FlyingAnimal.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A4D5D21975D7D2007B84B7 /* FlyingAnimal.m */; };
+		04A4D5D71979B2FE007B84B7 /* Balloon.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A4D5D61979B2FE007B84B7 /* Balloon.m */; };
+		04A4D5DE197A2375007B84B7 /* Exclamation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A4D5DD197A2375007B84B7 /* Exclamation.m */; };
 		04ACE9A5196B2B5A00A3292E /* Slingshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 04ACE9A4196B2B5A00A3292E /* Slingshot.m */; };
 		04E6A4F21964B6BE00217E08 /* Bear.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E6A4F11964B6BE00217E08 /* Bear.m */; };
 		8392007A18EE8E3300B6C429 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8392007918EE8E3300B6C429 /* GLKit.framework */; };
@@ -68,8 +70,12 @@
 		0483D6F71970670C0064A8FC /* GameOver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameOver.m; path = Source/GameOver.m; sourceTree = "<group>"; };
 		0483D6F9197070000064A8FC /* Menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Menu.h; path = Source/Menu.h; sourceTree = "<group>"; };
 		0483D6FA197070000064A8FC /* Menu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Menu.m; path = Source/Menu.m; sourceTree = "<group>"; };
-		04A567CC196334BD004F5254 /* Cannon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cannon.h; path = Source/Cannon.h; sourceTree = "<group>"; };
-		04A567CD196334BD004F5254 /* Cannon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Cannon.m; path = Source/Cannon.m; sourceTree = "<group>"; };
+		04A4D5D11975D7D2007B84B7 /* FlyingAnimal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlyingAnimal.h; path = Source/FlyingAnimal.h; sourceTree = "<group>"; };
+		04A4D5D21975D7D2007B84B7 /* FlyingAnimal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlyingAnimal.m; path = Source/FlyingAnimal.m; sourceTree = "<group>"; };
+		04A4D5D51979B2FE007B84B7 /* Balloon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Balloon.h; path = Source/Balloon.h; sourceTree = "<group>"; };
+		04A4D5D61979B2FE007B84B7 /* Balloon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Balloon.m; path = Source/Balloon.m; sourceTree = "<group>"; };
+		04A4D5DC197A2375007B84B7 /* Exclamation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exclamation.h; path = Source/Exclamation.h; sourceTree = "<group>"; };
+		04A4D5DD197A2375007B84B7 /* Exclamation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Exclamation.m; path = Source/Exclamation.m; sourceTree = "<group>"; };
 		04ACE9A3196B2B5A00A3292E /* Slingshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Slingshot.h; path = Source/Slingshot.h; sourceTree = "<group>"; };
 		04ACE9A4196B2B5A00A3292E /* Slingshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Slingshot.m; path = Source/Slingshot.m; sourceTree = "<group>"; };
 		04E6A4F01964B6BE00217E08 /* Bear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bear.h; path = Source/Bear.h; sourceTree = "<group>"; };
@@ -149,8 +155,6 @@
 				B7378993180767190076A88C /* MainScene.m */,
 				0483D6F9197070000064A8FC /* Menu.h */,
 				0483D6FA197070000064A8FC /* Menu.m */,
-				04A567CC196334BD004F5254 /* Cannon.h */,
-				04A567CD196334BD004F5254 /* Cannon.m */,
 				04E6A4F01964B6BE00217E08 /* Bear.h */,
 				04E6A4F11964B6BE00217E08 /* Bear.m */,
 				04ACE9A3196B2B5A00A3292E /* Slingshot.h */,
@@ -159,6 +163,12 @@
 				0483D6F31970572E0064A8FC /* Candy.m */,
 				0483D6F61970670C0064A8FC /* GameOver.h */,
 				0483D6F71970670C0064A8FC /* GameOver.m */,
+				04A4D5D11975D7D2007B84B7 /* FlyingAnimal.h */,
+				04A4D5D21975D7D2007B84B7 /* FlyingAnimal.m */,
+				04A4D5D51979B2FE007B84B7 /* Balloon.h */,
+				04A4D5D61979B2FE007B84B7 /* Balloon.m */,
+				04A4D5DC197A2375007B84B7 /* Exclamation.h */,
+				04A4D5DD197A2375007B84B7 /* Exclamation.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -370,10 +380,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04A4D5D31975D7D2007B84B7 /* FlyingAnimal.m in Sources */,
 				04E6A4F21964B6BE00217E08 /* Bear.m in Sources */,
-				04A567CE196334BD004F5254 /* Cannon.m in Sources */,
 				B737893F1807617C0076A88C /* AppDelegate.m in Sources */,
 				0483D6F81970670C0064A8FC /* GameOver.m in Sources */,
+				04A4D5DE197A2375007B84B7 /* Exclamation.m in Sources */,
+				04A4D5D71979B2FE007B84B7 /* Balloon.m in Sources */,
 				B7378994180767190076A88C /* MainScene.m in Sources */,
 				0483D6F41970572E0064A8FC /* Candy.m in Sources */,
 				B73789871807631A0076A88C /* main.m in Sources */,

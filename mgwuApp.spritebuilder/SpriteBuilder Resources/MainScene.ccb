@@ -10,7 +10,7 @@
 		<false/>
 	</dict>
 	<key>UUID</key>
-	<integer>68</integer>
+	<integer>69</integer>
 	<key>centeredOrigin</key>
 	<false/>
 	<key>currentResolution</key>
@@ -34,6 +34,14 @@
 			<integer>0</integer>
 			<key>position</key>
 			<real>-1</real>
+			<key>type</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>orientation</key>
+			<integer>0</integer>
+			<key>position</key>
+			<real>-48</real>
 			<key>type</key>
 			<integer>0</integer>
 		</dict>
@@ -96,8 +104,8 @@
 						<string>Size</string>
 						<key>value</key>
 						<array>
-							<real>568</real>
-							<real>5000</real>
+							<real>1136</real>
+							<real>1500</real>
 							<integer>0</integer>
 							<integer>0</integer>
 						</array>
@@ -133,8 +141,8 @@
 						<string>Color3</string>
 						<key>value</key>
 						<array>
-							<real>0.86688458919525146</real>
-							<real>0.76343721151351929</real>
+							<real>0.86288493871688843</real>
+							<real>0.8272092342376709</real>
 							<real>0.87000000476837158</real>
 							<real>1</real>
 						</array>
@@ -146,9 +154,9 @@
 						<string>Color3</string>
 						<key>value</key>
 						<array>
-							<real>0.045523747801780701</real>
-							<real>0.35066673159599304</real>
-							<real>0.80000001192092896</real>
+							<real>0.13681171834468842</real>
+							<real>0.51634454727172852</real>
+							<real>0.71226662397384644</real>
 							<real>1</real>
 						</array>
 					</dict>
@@ -283,7 +291,7 @@
 								<key>value</key>
 								<array>
 									<real>0.0</real>
-									<real>100</real>
+									<real>60</real>
 									<integer>0</integer>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -321,7 +329,7 @@
 								<key>value</key>
 								<array>
 									<string></string>
-									<string>CandyCannonAssets/mountainpink.png</string>
+									<string>NewAssets/hillsBrown.png</string>
 								</array>
 							</dict>
 							<dict>
@@ -371,8 +379,8 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>1900</real>
-									<real>100</real>
+									<real>748</real>
+									<real>60</real>
 									<integer>0</integer>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -410,7 +418,7 @@
 								<key>value</key>
 								<array>
 									<string></string>
-									<string>CandyCannonAssets/mountainpink.png</string>
+									<string>NewAssets/hillsBrown.png</string>
 								</array>
 							</dict>
 							<dict>
@@ -427,6 +435,8 @@
 								</array>
 							</dict>
 						</array>
+						<key>selected</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>UUID</key>
@@ -461,7 +471,7 @@
 								<key>value</key>
 								<array>
 									<real>0.0</real>
-									<real>58</real>
+									<real>0.0</real>
 									<integer>0</integer>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -499,7 +509,7 @@
 								<key>value</key>
 								<array>
 									<string></string>
-									<string>CandyCannonAssets/background2ipad.png</string>
+									<string>NewAssets/grassVector.png</string>
 								</array>
 							</dict>
 							<dict>
@@ -549,96 +559,7 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>1135</real>
-									<real>58</real>
-									<integer>0</integer>
-									<integer>0</integer>
-									<integer>0</integer>
-								</array>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>anchorPoint</string>
-								<key>type</key>
-								<string>Point</string>
-								<key>value</key>
-								<array>
-									<real>0.0</real>
-									<real>0.0</real>
-								</array>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>scale</string>
-								<key>type</key>
-								<string>ScaleLock</string>
-								<key>value</key>
-								<array>
-									<real>1</real>
-									<real>1</real>
-									<false/>
-									<integer>0</integer>
-								</array>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>spriteFrame</string>
-								<key>type</key>
-								<string>SpriteFrame</string>
-								<key>value</key>
-								<array>
-									<string></string>
-									<string>CandyCannonAssets/background2ipad.png</string>
-								</array>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>color</string>
-								<key>type</key>
-								<string>Color3</string>
-								<key>value</key>
-								<array>
-									<real>1</real>
-									<real>1</real>
-									<real>1</real>
-									<real>1</real>
-								</array>
-							</dict>
-						</array>
-					</dict>
-					<dict>
-						<key>UUID</key>
-						<integer>39</integer>
-						<key>baseClass</key>
-						<string>CCSprite</string>
-						<key>children</key>
-						<array/>
-						<key>customClass</key>
-						<string></string>
-						<key>displayName</key>
-						<string>bg1-2</string>
-						<key>memberVarAssignmentName</key>
-						<string>_midGround1</string>
-						<key>memberVarAssignmentType</key>
-						<integer>1</integer>
-						<key>properties</key>
-						<array>
-							<dict>
-								<key>name</key>
-								<string>name</string>
-								<key>type</key>
-								<string>StringSimple</string>
-								<key>value</key>
-								<string></string>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>position</string>
-								<key>type</key>
-								<string>Position</string>
-								<key>value</key>
-								<array>
-									<real>0.0</real>
+									<real>755</real>
 									<real>0.0</real>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -677,96 +598,7 @@
 								<key>value</key>
 								<array>
 									<string></string>
-									<string>CandyCannonAssets/background1ipad-3.png</string>
-								</array>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>color</string>
-								<key>type</key>
-								<string>Color3</string>
-								<key>value</key>
-								<array>
-									<real>1</real>
-									<real>1</real>
-									<real>1</real>
-									<real>1</real>
-								</array>
-							</dict>
-						</array>
-					</dict>
-					<dict>
-						<key>UUID</key>
-						<integer>42</integer>
-						<key>baseClass</key>
-						<string>CCSprite</string>
-						<key>children</key>
-						<array/>
-						<key>customClass</key>
-						<string></string>
-						<key>displayName</key>
-						<string>bg1-2</string>
-						<key>memberVarAssignmentName</key>
-						<string>_midGround2</string>
-						<key>memberVarAssignmentType</key>
-						<integer>1</integer>
-						<key>properties</key>
-						<array>
-							<dict>
-								<key>name</key>
-								<string>name</string>
-								<key>type</key>
-								<string>StringSimple</string>
-								<key>value</key>
-								<string></string>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>position</string>
-								<key>type</key>
-								<string>Position</string>
-								<key>value</key>
-								<array>
-									<real>1141</real>
-									<real>0.0</real>
-									<integer>0</integer>
-									<integer>0</integer>
-									<integer>0</integer>
-								</array>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>anchorPoint</string>
-								<key>type</key>
-								<string>Point</string>
-								<key>value</key>
-								<array>
-									<real>0.0</real>
-									<real>0.0</real>
-								</array>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>scale</string>
-								<key>type</key>
-								<string>ScaleLock</string>
-								<key>value</key>
-								<array>
-									<real>1</real>
-									<real>1</real>
-									<false/>
-									<integer>0</integer>
-								</array>
-							</dict>
-							<dict>
-								<key>name</key>
-								<string>spriteFrame</string>
-								<key>type</key>
-								<string>SpriteFrame</string>
-								<key>value</key>
-								<array>
-									<string></string>
-									<string>CandyCannonAssets/background1ipad-3.png</string>
+									<string>NewAssets/grassVector.png</string>
 								</array>
 							</dict>
 							<dict>
@@ -885,7 +717,7 @@
 										<string>Position</string>
 										<key>value</key>
 										<array>
-											<real>569</real>
+											<real>643</real>
 											<real>-5</real>
 											<integer>0</integer>
 											<integer>0</integer>
@@ -1149,6 +981,84 @@
 				<array>
 					<dict>
 						<key>UUID</key>
+						<integer>68</integer>
+						<key>baseClass</key>
+						<string>CCNode</string>
+						<key>children</key>
+						<array/>
+						<key>customClass</key>
+						<string></string>
+						<key>displayName</key>
+						<string>CCNode</string>
+						<key>memberVarAssignmentName</key>
+						<string>_pointNode</string>
+						<key>memberVarAssignmentType</key>
+						<integer>1</integer>
+						<key>properties</key>
+						<array>
+							<dict>
+								<key>name</key>
+								<string>name</string>
+								<key>type</key>
+								<string>StringSimple</string>
+								<key>value</key>
+								<string></string>
+							</dict>
+							<dict>
+								<key>name</key>
+								<string>position</string>
+								<key>type</key>
+								<string>Position</string>
+								<key>value</key>
+								<array>
+									<real>568</real>
+									<real>0.0</real>
+									<integer>0</integer>
+									<integer>0</integer>
+									<integer>0</integer>
+								</array>
+							</dict>
+							<dict>
+								<key>name</key>
+								<string>contentSize</string>
+								<key>type</key>
+								<string>Size</string>
+								<key>value</key>
+								<array>
+									<real>0.10000000149011612</real>
+									<real>1</real>
+									<integer>2</integer>
+									<integer>2</integer>
+								</array>
+							</dict>
+							<dict>
+								<key>name</key>
+								<string>anchorPoint</string>
+								<key>type</key>
+								<string>Point</string>
+								<key>value</key>
+								<array>
+									<real>1</real>
+									<real>0.0</real>
+								</array>
+							</dict>
+							<dict>
+								<key>name</key>
+								<string>scale</string>
+								<key>type</key>
+								<string>ScaleLock</string>
+								<key>value</key>
+								<array>
+									<real>1</real>
+									<real>1</real>
+									<false/>
+									<integer>0</integer>
+								</array>
+							</dict>
+						</array>
+					</dict>
+					<dict>
+						<key>UUID</key>
 						<integer>54</integer>
 						<key>baseClass</key>
 						<string>CCLabelTTF</string>
@@ -1366,8 +1276,6 @@
 								</array>
 							</dict>
 						</array>
-						<key>selected</key>
-						<true/>
 					</dict>
 					<dict>
 						<key>UUID</key>
@@ -1781,10 +1689,10 @@
 						<string>Size</string>
 						<key>value</key>
 						<array>
-							<real>0.0</real>
-							<real>0.0</real>
-							<integer>0</integer>
-							<integer>0</integer>
+							<real>0.5</real>
+							<real>0.5</real>
+							<integer>2</integer>
+							<integer>2</integer>
 						</array>
 					</dict>
 					<dict>
@@ -1951,7 +1859,7 @@
 			<key>name</key>
 			<string>Default Timeline</string>
 			<key>offset</key>
-			<real>0.0</real>
+			<real>0.41877555847167969</real>
 			<key>position</key>
 			<real>0.0</real>
 			<key>resolution</key>
