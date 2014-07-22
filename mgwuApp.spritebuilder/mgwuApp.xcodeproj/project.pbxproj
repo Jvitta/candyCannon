@@ -10,6 +10,8 @@
 		0483D6F41970572E0064A8FC /* Candy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0483D6F31970572E0064A8FC /* Candy.m */; };
 		0483D6F81970670C0064A8FC /* GameOver.m in Sources */ = {isa = PBXBuildFile; fileRef = 0483D6F71970670C0064A8FC /* GameOver.m */; };
 		0483D6FB197070000064A8FC /* Menu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0483D6FA197070000064A8FC /* Menu.m */; };
+		04A40410197CBE73001ED874 /* Wheel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A4040F197CBE72001ED874 /* Wheel.m */; };
+		04A40417197D967E001ED874 /* Cannon.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A40416197D967E001ED874 /* Cannon.m */; };
 		04A4D5D31975D7D2007B84B7 /* FlyingAnimal.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A4D5D21975D7D2007B84B7 /* FlyingAnimal.m */; };
 		04A4D5D71979B2FE007B84B7 /* Balloon.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A4D5D61979B2FE007B84B7 /* Balloon.m */; };
 		04A4D5DE197A2375007B84B7 /* Exclamation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A4D5DD197A2375007B84B7 /* Exclamation.m */; };
@@ -70,6 +72,10 @@
 		0483D6F71970670C0064A8FC /* GameOver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameOver.m; path = Source/GameOver.m; sourceTree = "<group>"; };
 		0483D6F9197070000064A8FC /* Menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Menu.h; path = Source/Menu.h; sourceTree = "<group>"; };
 		0483D6FA197070000064A8FC /* Menu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Menu.m; path = Source/Menu.m; sourceTree = "<group>"; };
+		04A4040E197CBE72001ED874 /* Wheel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Wheel.h; path = Source/Wheel.h; sourceTree = "<group>"; };
+		04A4040F197CBE72001ED874 /* Wheel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Wheel.m; path = Source/Wheel.m; sourceTree = "<group>"; };
+		04A40415197D967E001ED874 /* Cannon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cannon.h; path = Source/Cannon.h; sourceTree = "<group>"; };
+		04A40416197D967E001ED874 /* Cannon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Cannon.m; path = Source/Cannon.m; sourceTree = "<group>"; };
 		04A4D5D11975D7D2007B84B7 /* FlyingAnimal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlyingAnimal.h; path = Source/FlyingAnimal.h; sourceTree = "<group>"; };
 		04A4D5D21975D7D2007B84B7 /* FlyingAnimal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlyingAnimal.m; path = Source/FlyingAnimal.m; sourceTree = "<group>"; };
 		04A4D5D51979B2FE007B84B7 /* Balloon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Balloon.h; path = Source/Balloon.h; sourceTree = "<group>"; };
@@ -151,6 +157,8 @@
 			children = (
 				B737893D1807617C0076A88C /* AppDelegate.h */,
 				B737893E1807617C0076A88C /* AppDelegate.m */,
+				04A4040E197CBE72001ED874 /* Wheel.h */,
+				04A4040F197CBE72001ED874 /* Wheel.m */,
 				B7378992180767190076A88C /* MainScene.h */,
 				B7378993180767190076A88C /* MainScene.m */,
 				0483D6F9197070000064A8FC /* Menu.h */,
@@ -169,6 +177,8 @@
 				04A4D5D61979B2FE007B84B7 /* Balloon.m */,
 				04A4D5DC197A2375007B84B7 /* Exclamation.h */,
 				04A4D5DD197A2375007B84B7 /* Exclamation.m */,
+				04A40415197D967E001ED874 /* Cannon.h */,
+				04A40416197D967E001ED874 /* Cannon.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -383,9 +393,11 @@
 				04A4D5D31975D7D2007B84B7 /* FlyingAnimal.m in Sources */,
 				04E6A4F21964B6BE00217E08 /* Bear.m in Sources */,
 				B737893F1807617C0076A88C /* AppDelegate.m in Sources */,
+				04A40410197CBE73001ED874 /* Wheel.m in Sources */,
 				0483D6F81970670C0064A8FC /* GameOver.m in Sources */,
 				04A4D5DE197A2375007B84B7 /* Exclamation.m in Sources */,
 				04A4D5D71979B2FE007B84B7 /* Balloon.m in Sources */,
+				04A40417197D967E001ED874 /* Cannon.m in Sources */,
 				B7378994180767190076A88C /* MainScene.m in Sources */,
 				0483D6F41970572E0064A8FC /* Candy.m in Sources */,
 				B73789871807631A0076A88C /* main.m in Sources */,

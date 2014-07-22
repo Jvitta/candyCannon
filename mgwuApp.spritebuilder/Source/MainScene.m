@@ -7,7 +7,6 @@
 //
 
 #import "MainScene.h"
-#import "Cannon.h"
 #import "Bear.h"
 #import "Slingshot.h"
 #import "GameOver.h"
@@ -15,6 +14,8 @@
 #import "Balloon.h"
 #import "CCPhysics+ObjectiveChipmunk.h"
 #import "Exclamation.h"
+#import "Wheel.h"
+#import "Cannon.h"
 
 @interface CGPointObject : NSObject
 {
@@ -29,7 +30,6 @@
 -(id) initWithCGPoint:(CGPoint)point offset:(CGPoint)offset;
 @end
 
-static BOOL isCannon;
 @implementation MainScene{
     
     CGPoint _backgroundParallaxRatio;
@@ -37,13 +37,18 @@ static BOOL isCannon;
     CCNode *_parallaxContainer;
     CCParallaxNode *_parallaxBackground;
     
-    Cannon *_cannon;
     float points;
     float cannonAngle;
+    float _powerBonus;
     BOOL _canFly;
     BOOL _hasLaunched;
     BOOL finLaunching;
+    BOOL _launched;
     BOOL gameOver;
+    BOOL _canRotate;
+    BOOL _bonusShowed;
+    BOOL _fired;
+    BOOL _canFire;
     
     CCPhysicsNode *_physicsNode;
     Bear *_bear;
@@ -64,16 +69,16 @@ static BOOL isCannon;
     CCNode *_gradNode;
     CCNode *_hudNode;
     CCNode *_pointNode;
+    Cannon *_cannon;
+
+    CCSprite *_dile;
+    Wheel *_powerWheel;
+    CCLabelTTF *_powerBonusLabel;
     Exclamation *_exclamation;
 
     CCSprite *_insideBar;
     
-    CCLabelTTF *_distance;
-    CCLabelTTF *_candyNum;
     CGSize screenSize;
-    
-    Slingshot *_slingshot;
-    NSArray *_bands;
     
     GameOver *_gameOver;
     
@@ -86,29 +91,24 @@ static BOOL isCannon;
     self = [super init];
     if (self) {
         points = 0;
-        _slingshot.band1.zOrder = 10;
-        _slingshot.band2.zOrder = -10;
-        isCannon = false;
-        _mousePosition = [CCNode node];
-        [self addChild:_mousePosition];
         _gameOver = (GameOver *)[CCBReader load:@"GameOver"];
         _candies = [[NSMutableArray alloc] init];
+        
     }
     return self;
 }
 -(void)didLoadFromCCB{
-    //_physicsNode.debugDraw = YES;
+    _cannon.zOrder = 100;
+    _canRotate = YES;
     _bear = (Bear *)[CCBReader load:@"Bear"];
+    
     [_physicsNode addChild:_bear];
-    _bear.position = _slingshot.position;
     _bear.zOrder = 0;
-    _physicsNode.gravity = ccp(0,0);
     _bear.physicsBody.collisionType = @"bear";
     _ground1.physicsBody.collisionType = @"ground";
     _ground2.physicsBody.collisionType = @"ground";
     
     self.userInteractionEnabled = true;
-    _bands = @[_slingshot.band1,_slingshot.band2];
     _grounds = @[_ground1,_ground2];
     _backgrounds = @[_background1,_background2];
     _mountains = @[_mountain1,_mountain2];
@@ -133,67 +133,47 @@ static BOOL isCannon;
     }
 }
 
+-(void)onEnter{
+    [super onEnter];
+    CCActionEaseElasticOut *wheelIn = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:1.5f position:ccp(_hudNode.contentSize.height,_hudNode.contentSize.width)]];
+    [_powerWheel runAction:wheelIn];
+
+}
+
 -(void)update:(CCTime)delta {
+    if(!_bonusShowed){
+        if(_canRotate){
+        _powerWheel.dile.rotation += 540 * delta;
+            if(_powerWheel.dile.rotation > 360)
+                _powerWheel.dile.rotation -= 360;
+        }
+        else{
+            [self showBonus];
+        }
+    }
+    
     _speed = pow(pow(_bear.physicsBody.velocity.x,2) + pow(_bear.physicsBody.velocity.y,2),0.5)/3000;
     float targetScale;
     
-    targetScale = clampf(-_speed/3 +1,0.7,1);
+    targetScale = clampf(-_speed/3 +1,0.1,1);
     //hacky stuff
-    _contentNode.anchorPoint = ccp(0.5,0.5);
-    self.scale += (targetScale - self.scale) * delta * .8;
-    _contentNode.anchorPoint = ccp(0,0);
+    /*_contentNode.anchorPoint = _bear.position;
+    _contentNode.scale += (targetScale - _contentNode.scale) * delta * .5;
+    _contentNode.anchorPoint = ccp(0,0);*/
     
-    _distance.string = [NSString stringWithFormat:@"%i", (int) _bear.position.x/100 - 1];
+    [self scale:(targetScale - _contentNode.scale) * delta * .5 scaleCenter:_bear.position];
+    
     screenSize = [[CCDirector sharedDirector] viewSize];
-    //this is slingshot stuff
     if(!finLaunching){
-    float r = 100;
-    CGPoint touchedLocation=_mousePosition.position;
-    for(CCNode *band in _bands){
-        float disToTouchPoint = ccpDistance(touchedLocation,_slingshot.anchorPoint);
-        
-        float radians = ccpToAngle(ccpSub(band.position, touchedLocation));
-        float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
-        
-        float cenToTouchRadians = ccpToAngle(ccpSub(touchedLocation, _slingshot.anchorPoint));
-        if(disToTouchPoint >= r){
-            float y = sin(cenToTouchRadians) * r;
-            float x = cos(cenToTouchRadians) * r;
-            
-            float radians = ccpToAngle(ccpSub(band.position, ccp(x,y)));
-            float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
-            band.rotation = degrees;
-
-            float dist = ccpDistance(band.position, ccp(x,y));
-            band.scaleX = dist/r;
-            //place bear at end of slingshot if it hasnt launched
-            if(_hasLaunched == false){
-            _bear.position = ccpAdd(ccp(x,y),_slingshot.position);
-            }
-        }
-        else{
-            float dist = ccpDistance(touchedLocation,band.position);
-            band.scaleX = dist/r;
-            band.rotation = degrees;
-            //place bear at end of slingshot if it hasnt launched
-            if(_hasLaunched == false){
-            _bear.position = ccpAdd(touchedLocation,_slingshot.position);
-            }
-        }
-    }
- }
+     }
     if(_canFly && points >= 0){
-        /*[_bear addChild:_jetPack];
-         get the screen position of the ground
-        CGPoint packScreenPosition = [_bear convertToNodeSpace:_jetPack.position];
-
-        _jetPack.position = packScreenPosition;*/
+       
         _bear.physicsBody.velocity = ccp(_bear.physicsBody.velocity.x + 20,_bear.physicsBody.velocity.y + 10);
         points -= 0.15;
         _insideBar.ScaleY = _insideBar.scaleY - 0.045;
     }
     //if character has stopped moving
-    if(!gameOver && finLaunching && _bear.physicsBody.velocity.x <= 1 && _bear.physicsBody.velocity.y <= 1 && _bear.position.y){
+    if(!gameOver && _launched && _bear.physicsBody.velocity.x <= 1 && _bear.physicsBody.velocity.y <= 1){
         [self gameOverSequence];
         gameOver = true;
     }
@@ -243,7 +223,7 @@ static BOOL isCannon;
         if(CGRectIntersectsRect(candy.boundingBox, _bear.boundingBox)){
             points++;
             _insideBar.scaleY = _insideBar.scaleY + 0.3;
-            _candyNum.string = [NSString stringWithFormat:@"%i", (int) points];
+            //_candyNum.string = [NSString stringWithFormat:@"%i", (int) points];
             [candy removeFromParent];
             [removeCandy addObject:candy];
         }
@@ -258,38 +238,140 @@ static BOOL isCannon;
     }
 }
 
+- (void) scale:(CGFloat) newScale scaleCenter:(CGPoint) scaleCenter {
+    // scaleCenter is the point to zoom to..
+    // If you are doing a pinch zoom, this should be the center of your pinch.
+    
+    // Get the original center point.
+    CGPoint oldCenterPoint = ccp(scaleCenter.x * _contentNode.scale, scaleCenter.y * _contentNode.scale);
+    
+    // Set the scale.
+    _contentNode.scale += newScale;
+    
+    // Get the new center point.
+    CGPoint newCenterPoint = ccp(scaleCenter.x * _contentNode.scale, scaleCenter.y * _contentNode.scale);
+    
+    // Then calculate the delta.
+    CGPoint centerPointDelta  = ccpSub(oldCenterPoint, newCenterPoint);
+    
+    // Now adjust your layer by the delta.
+    _contentNode.position = ccpAdd(_contentNode.position, centerPointDelta);
+}
+
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(!_canRotate && _fired == NO && _canFire){
+        [self fire];
+    }
+    _canRotate = NO;
     if(finLaunching && points >= 0){
         _canFly = true;
     }
 }
 
-
--(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    _physicsNode.gravity = ccp(0,-500);
-    _canFly = false;
+-(void)fire{
+    _fired = YES;
+    [_cannon.barrel stopAllActions];
+    CGPoint bearPosition = [_cannon.barrel convertToWorldSpace:ccp(120, 106)];
+    _bear.position = [_physicsNode convertToNodeSpace:bearPosition];
     
-    CCActionEaseElasticOut *slingShotBounce = [CCActionEaseElasticOut actionWithAction:[CCActionMoveTo actionWithDuration:2.2f position:_slingshot.anchorPoint]];
-    CCActionCallBlock *launched = [CCActionCallBlock actionWithBlock:^{
-    _hasLaunched = true;
-    }];
-    CCAction *actionSequence = [CCActionSequence actions:slingShotBounce,launched, nil];
-    
-    [_mousePosition runAction:actionSequence];
-    
-    
-    if(!finLaunching){
-    CGPoint bandPosition = [_slingshot.band1 convertToWorldSpace:ccp(-100, 0)];
-    CGPoint newPos = [self convertToNodeSpace:bandPosition];
-    CGPoint forceDirection = ccpSub(_slingshot.positionInPoints, newPos);
-    CGPoint finalForce = ccpMult(forceDirection,5 );
+    CGPoint _barrelEnd = [_cannon.barrel convertToWorldSpace:ccp(137, 87)];
+    _barrelEnd = [_cannon.parent convertToNodeSpace:_barrelEnd];
+    CGPoint _worldSpace = [_cannon convertToWorldSpace:_cannon.barrel.position];
+    CGPoint _barrelStart = [_cannon.parent convertToNodeSpace:_worldSpace];
+    CGPoint forceDirection = ccpSub(_barrelEnd,_barrelStart);
+    CGPoint finalForce = ccpMult(forceDirection,_powerBonus * 3);
     [_bear.physicsBody applyImpulse:finalForce];
     CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,_gradNode.contentSize.height)];
     [_contentNode runAction:follow];
+    _launched = YES;
+    
+    CCParticleSystem *_cannonFire = (CCParticleSystem *)[CCBReader load:@"CandyParticles"];
+    _cannonFire.autoRemoveOnFinish = TRUE;
+    _cannonFire.position = _barrelEnd;
+    _cannonFire.angle = CC_RADIANS_TO_DEGREES(ccpToAngle(forceDirection));
+    [_physicsNode addChild:_cannonFire];
+    [self scheduleBlock:^(CCTimer* timer)
+    {
+        _physicsNode.gravity = ccp(0,-750);
+    } delay:0.2];
+    
     [self createObstacles];
-    //[NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(createObstacles) userInfo:nil repeats:YES];
+}
+
+-(void)showBonus{
+    _bonusShowed = YES;
+    int _wheelRotation = (int) _powerWheel.dile.rotation;
+    switch(_wheelRotation){
+        case 83 ... 277:
+            _powerBonus = 0.5;
+            break;
+        case 278 ... 309:
+            _powerBonus = 1.25;
+            break;
+        case 51 ... 82:
+            _powerBonus = 1.25;
+            break;
+        case 310 ... 337:
+            _powerBonus = 1.5;
+            break;
+        case 23 ... 50:
+            _powerBonus = 1.5;
+            break;
+        case 338 ... 354:
+            _powerBonus = 1.75;
+            break;
+        case 6 ... 22:
+            _powerBonus = 1.75;
+            break;
+        case 355 ... 360:
+            _powerBonus = 2;
+            break;
+        case 0 ... 5:
+            _powerBonus = 2;
+            break;
     }
-    finLaunching = true;
+    if(_powerBonus > 1){
+    _powerBonusLabel.string = [NSString stringWithFormat:@"+%.0f",(_powerBonus - 1)* 100];
+    }
+    else{
+        _powerBonusLabel.string = [NSString stringWithFormat:@"-50"];
+    }
+    CCActionDelay *delay = [CCActionDelay actionWithDuration:0.2];
+    CCActionCallBlock *visableOn = [CCActionCallBlock actionWithBlock:^{
+        _powerBonusLabel.visible = YES;
+    }];
+    CCActionCallBlock *visableOff = [CCActionCallBlock actionWithBlock:^{
+        _powerBonusLabel.visible = NO;
+    }];
+    CCActionEaseBackIn *wheelOut = [CCActionEaseBackIn actionWithAction:[CCActionMoveTo actionWithDuration:0.4f position:ccp(_hudNode.contentSize.height,_hudNode.contentSize.width *3)]];
+    CCActionCallBlock *wheelLeave = [CCActionCallBlock actionWithBlock:^{
+        [_powerWheel runAction:wheelOut];
+    }];
+    CCActionCallBlock *startCannonRotation = [CCActionCallBlock actionWithBlock:^{
+        [self rotateCannon];
+    }];
+    CCActionCallBlock *deleteWheel = [CCActionCallBlock actionWithBlock:^{
+        [_powerWheel removeFromParent];
+    }];
+    CCActionCallBlock *canFire = [CCActionCallBlock actionWithBlock:^{
+        _canFire = YES;
+    }];
+    
+    CCActionSequence *buttonFlash = [CCActionSequence actions:visableOn,delay,visableOff,delay,visableOn,delay,visableOff,delay,visableOn,delay,visableOff,wheelLeave,startCannonRotation,delay,delay,deleteWheel,canFire, nil];
+    [self runAction:buttonFlash];
+}
+-(void)rotateCannon{
+    CCActionRotateBy *rotateCannon = [CCActionRotateBy actionWithDuration:1 angle:-90];
+    CCActionRotateBy *rotateCannonBack = [CCActionRotateBy actionWithDuration:1 angle: 90];
+    CCActionRepeatForever *repeat = [CCActionRepeatForever actionWithAction:[CCActionSequence actions:rotateCannon,rotateCannonBack, nil]];
+    [_cannon.barrel runAction:repeat];
+}
+
+-(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+
+}
+-(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
+    
 }
 
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair bear:(CCNode *)nodeA balloon:(CCNode *)nodeB{
@@ -319,10 +401,7 @@ static BOOL isCannon;
     CCActionSequence *actionSequence = [CCActionSequence actions:delay,createObstacle,nil];
     [self runAction:actionSequence];
 }
--(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
-    CGPoint touchedLocation=[touch locationInNode:_slingshot];
-    _mousePosition.position = touchedLocation;
-}
+
 -(BOOL)ccPhysicsCollisionPreSolve:(CCPhysicsCollisionPair *)pair ground:(CCNode *)nodeA wildcard:(CCNode *)nodeB{
     _bear.physicsBody.velocity = ccp(_bear.physicsBody.velocity.x * 0.96,_bear.physicsBody.velocity.y);
     return YES;
@@ -332,7 +411,14 @@ static BOOL isCannon;
     int candyNum;
     int flockNum;
     int animalNum;
+    
+    //float BounceChance = arc4random_uniform(100);
     float chance = arc4random_uniform(100);
+    /*if (BounceChance > 25){
+        CCNode *_bounceObject = [CCBReader load:@"BounceObject"];
+        [_physicsNode addChild:_bounceObject];
+        _bounceObject.position = ccp(Position.x + 2 * screenSize.width + arc4random()% (int)screenSize.width + 100,70);
+    }*/
     if (chance > 25){
         animalNum = 1;
     }
