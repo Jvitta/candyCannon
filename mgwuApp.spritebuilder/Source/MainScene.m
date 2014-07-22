@@ -84,7 +84,7 @@
     
     float _minScale;
     float _maxScale;
-    float _speed;
+    float _height;
 }
 
 -(id)init{
@@ -152,16 +152,18 @@
         }
     }
     
-    _speed = pow(pow(_bear.physicsBody.velocity.x,2) + pow(_bear.physicsBody.velocity.y,2),0.5)/3000;
+    _height = pow(pow(_bear.physicsBody.velocity.x,2) + pow(_bear.physicsBody.velocity.y,2),0.5)/3000;
     float targetScale;
     
-    targetScale = clampf(-_speed/3 +1,0.1,1);
-    //hacky stuff
-    /*_contentNode.anchorPoint = _bear.position;
-    _contentNode.scale += (targetScale - _contentNode.scale) * delta * .5;
-    _contentNode.anchorPoint = ccp(0,0);*/
+    targetScale = clampf(-_height/10 +1,0.5,1);
     
-    [self scale:(targetScale - _contentNode.scale) * delta * .5 scaleCenter:_bear.position];
+    CGPoint worldSpace = [_bear.parent convertToWorldSpace:_bear.position];
+    CGPoint nodeSpace = [_contentNode convertToNodeSpace:worldSpace];
+    
+    if(_launched){
+        [self nodeTargetCenter:worldSpace];
+        [self scale:targetScale scaleCenter:nodeSpace];
+    }
     
     screenSize = [[CCDirector sharedDirector] viewSize];
     if(!finLaunching){
@@ -238,6 +240,13 @@
     }
 }
 
+-(void) nodeTargetCenter:(CGPoint) space{
+    CGPoint center = ccp(screenSize.width/2.0f,screenSize.height/2.0f);
+    CGPoint difference = ccpSub(ccp(center.x,0),ccp(space.x,0));
+    _contentNode.position = ccpAdd(_contentNode.position,difference);
+    
+}
+
 - (void) scale:(CGFloat) newScale scaleCenter:(CGPoint) scaleCenter {
     // scaleCenter is the point to zoom to..
     // If you are doing a pinch zoom, this should be the center of your pinch.
@@ -279,7 +288,7 @@
     CGPoint _worldSpace = [_cannon convertToWorldSpace:_cannon.barrel.position];
     CGPoint _barrelStart = [_cannon.parent convertToNodeSpace:_worldSpace];
     CGPoint forceDirection = ccpSub(_barrelEnd,_barrelStart);
-    CGPoint finalForce = ccpMult(forceDirection,_powerBonus * 3);
+    CGPoint finalForce = ccpMult(forceDirection,_powerBonus * 3.0f);
     [_bear.physicsBody applyImpulse:finalForce];
     CCActionFollow *follow = [CCActionFollow actionWithTarget:_bear worldBoundary:CGRectMake(0.0f,0.0f,CGFLOAT_MAX,_gradNode.contentSize.height)];
     [_contentNode runAction:follow];
