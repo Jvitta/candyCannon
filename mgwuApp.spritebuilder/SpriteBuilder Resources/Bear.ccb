@@ -110,7 +110,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>CandyCannonAssets/Flap-1-0.png</string>
+							<string>NewAssets/bear.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -164,8 +164,8 @@
 			<key>points</key>
 			<array>
 				<array>
-					<real>21.230499267578125</real>
-					<real>17.378921508789062</real>
+					<real>11.67818546295166</real>
+					<real>16.512039184570312</real>
 				</array>
 			</array>
 			<key>polygons</key>

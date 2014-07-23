@@ -70,6 +70,7 @@
     CCNode *_hudNode;
     CCNode *_pointNode;
     Cannon *_cannon;
+    CCParticleSystem *bearBlast;
 
     CCSprite *_dile;
     Wheel *_powerWheel;
@@ -84,7 +85,7 @@
     
     float _minScale;
     float _maxScale;
-    float _height;
+    float _speed;
 }
 
 -(id)init{
@@ -101,6 +102,11 @@
     _cannon.zOrder = 100;
     _canRotate = YES;
     _bear = (Bear *)[CCBReader load:@"Bear"];
+    _bear.position = ccp(-100,-100);
+    bearBlast = (CCParticleSystem *) [CCBReader load:@"JetPackBoost"];
+    bearBlast.visible = NO;
+    [_physicsNode addChild:bearBlast];
+    bearBlast.rotation = -230;
     
     [_physicsNode addChild:_bear];
     _bear.zOrder = 0;
@@ -141,6 +147,10 @@
 }
 
 -(void)update:(CCTime)delta {
+    bearBlast.position = ccpSub(_bear.position,ccp(15,15));
+    if(bearBlast.visible){
+        _bear.physicsBody.velocity = ccpAdd(_bear.physicsBody.velocity,ccp(10,40));
+    }
     if(!_bonusShowed){
         if(_canRotate){
         _powerWheel.dile.rotation += 540 * delta;
@@ -151,11 +161,11 @@
             [self showBonus];
         }
     }
-    
-    _height = pow(pow(_bear.physicsBody.velocity.x,2) + pow(_bear.physicsBody.velocity.y,2),0.5)/3000;
+    //scaling
+    /*_speed = pow(pow(_bear.physicsBody.velocity.x,2) + pow(_bear.physicsBody.velocity.y,2),0.5)/3000;
     float targetScale;
     
-    targetScale = clampf(-_height/10 +1,0.5,1);
+    targetScale = clampf(-_speed/10 +1,0.5,1);
     
     CGPoint worldSpace = [_bear.parent convertToWorldSpace:_bear.position];
     CGPoint nodeSpace = [_contentNode convertToNodeSpace:worldSpace];
@@ -163,7 +173,7 @@
     if(_launched){
         [self nodeTargetCenter:worldSpace];
         [self scale:targetScale scaleCenter:nodeSpace];
-    }
+    }*/
     
     screenSize = [[CCDirector sharedDirector] viewSize];
     if(!finLaunching){
@@ -239,7 +249,8 @@
         [_candies removeObject:candy];
     }
 }
-
+//scaling
+/*
 -(void) nodeTargetCenter:(CGPoint) space{
     CGPoint center = ccp(screenSize.width/2.0f,screenSize.height/2.0f);
     CGPoint difference = ccpSub(ccp(center.x,0),ccp(space.x,0));
@@ -255,7 +266,7 @@
     CGPoint oldCenterPoint = ccp(scaleCenter.x * _contentNode.scale, scaleCenter.y * _contentNode.scale);
     
     // Set the scale.
-    _contentNode.scale += newScale;
+    _contentNode.scale = newScale;
     
     // Get the new center point.
     CGPoint newCenterPoint = ccp(scaleCenter.x * _contentNode.scale, scaleCenter.y * _contentNode.scale);
@@ -265,9 +276,12 @@
     
     // Now adjust your layer by the delta.
     _contentNode.position = ccpAdd(_contentNode.position, centerPointDelta);
-}
+}*/
 
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(_fired){
+        bearBlast.visible = YES;
+    }
     if(!_canRotate && _fired == NO && _canFire){
         [self fire];
     }
@@ -377,8 +391,9 @@
 }
 
 -(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-
+    bearBlast.visible = NO;
 }
+
 -(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
     
 }
