@@ -318,7 +318,7 @@
         _physicsNode.gravity = ccp(0,-750);
     } delay:0.2];
     
-    [self createObstacles];
+    //[self createObstacles];
 }
 
 -(void)showBonus{
