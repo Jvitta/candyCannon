@@ -33,10 +33,12 @@
 @implementation MainScene{
     
     CGPoint _backgroundParallaxRatio;
+    CGPoint _mountainParallaxRatio;
     CGPoint _cloudsParallaxRatio;
     CCNode *_parallaxContainer;
     CCParallaxNode *_parallaxBackground;
     CCParallaxNode *_parallaxClouds;
+    CCParallaxNode *_parallaxMountains;
     
     float points;
     float cannonAngle;
@@ -58,6 +60,8 @@
     NSArray *_backgrounds;
     NSArray *_mountains;
     NSMutableArray *_candies;
+    CCNode *_mountain1;
+    CCNode *_mountain2;
     CCNode *_ground1;
     CCNode *_ground2;
     CCNode *_mousePosition;
@@ -82,6 +86,7 @@
     Wheel *_powerWheel;
     CCLabelTTF *_powerBonusLabel;
     Exclamation *_exclamation;
+    CCLabelTTF *_score;
 
     CCSprite *_insideBar;
     
@@ -109,7 +114,7 @@
     _canRotate = YES;
     _bear = (Bear *)[CCBReader load:@"Bear"];
     _bear.position = ccp(-100,-100);
-    bearBlast = (CCParticleSystem *) [CCBReader load:@"JetPackBoost"];
+    bearBlast = (CCParticleSystem *) [CCBReader load:@"JetpackBoost"];
     bearBlast.visible = NO;
     [_physicsNode addChild:bearBlast];
     bearBlast.rotation = -230;
@@ -124,14 +129,18 @@
     _grounds = @[_ground1,_ground2];
     _clouds = @[_cloud1,_cloud2,_cloud3,_cloud4,_cloud5];
     _backgrounds = @[_background1,_background2];
+    _mountains = @[_mountain1,_mountain2];
     _parallaxBackground = [CCParallaxNode node];
     _parallaxClouds = [CCParallaxNode node];
+    _parallaxMountains = [CCParallaxNode node];
     
+    [_parallaxContainer addChild:_parallaxMountains];
     [_parallaxContainer addChild:_parallaxBackground];
     [_parallaxContainer addChild:_parallaxClouds];
     _parallaxContainer.zOrder = -10;
     _backgroundParallaxRatio = ccp(0.3, 0.6);
     _cloudsParallaxRatio = ccp(0.2, 1);
+    _mountainParallaxRatio = ccp(0.2,0.9);
     
     _physicsNode.collisionDelegate = self;
     
@@ -145,6 +154,11 @@
         [_contentNode removeChild:cloud];
         [_parallaxClouds addChild:cloud z:-10 parallaxRatio:_cloudsParallaxRatio positionOffset:offset];
     }
+    for (CCNode *mountains in _mountains) {
+        CGPoint offset = mountains.position;
+        [_contentNode removeChild:mountains];
+        [_parallaxMountains addChild:mountains z:-10 parallaxRatio:_mountainParallaxRatio positionOffset:offset];
+    }
 }
 
 -(void)onEnter{
@@ -155,6 +169,7 @@
 }
 
 -(void)update:(CCTime)delta {
+    _score.string = [NSString stringWithFormat:@"DISTANCE:%i", (int) _bear.position.x/1+ 10000];
     _insideBar.scaleY = points/100;
     bearBlast.position = ccpSub(_bear.position,ccp(15,15));
     if(bearBlast.visible && points > 0){
@@ -235,6 +250,20 @@
         }
     }
 
+    for (CCNode *mountain in _mountains) {
+        // get the world position of the ground
+        CGPoint groundWorldPosition = [_physicsNode convertToWorldSpace:mountain.position];
+        // get the screen position of the ground
+        CGPoint groundScreenPosition = [self convertToNodeSpace:groundWorldPosition];
+        // if the left corner is one complete width off the screen, move it to the right
+        if (groundScreenPosition.x <= (-1 * mountain.contentSize.width) - 30) {
+            for (CGPointObject *child in _parallaxClouds.parallaxArray) {
+                if (child.child == mountain) {
+                    child.offset = ccp(child.offset.x + 2 * screenSize.width - 1, child.offset.y);
+                }
+            }
+        }
+    }
     
     NSMutableArray *removeCandy = [NSMutableArray array];
     for(Candy *candy in _candies){
